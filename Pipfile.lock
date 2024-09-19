@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "905ea98fdcb075978acfdf34ac7b9ea232f322d25c465f3ecf326eeaf41b4c06"
+            "sha256": "a5044d2a62bfccc788c05811d016b959262f4e1a282c4295cb7ca03f07dd621e"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -41,6 +41,22 @@
             "index": "pypi",
             "markers": "python_version >= '3.8'",
             "version": "==4.4.6"
+        },
+        "django-rest-framework": {
+            "hashes": [
+                "sha256:47a8f496fa69e3b6bd79f68dd7a1527d907d6b77f009e9db7cf9bb21cc565e4a"
+            ],
+            "index": "pypi",
+            "version": "==0.1.0"
+        },
+        "djangorestframework": {
+            "hashes": [
+                "sha256:2b8871b062ba1aefc2de01f773875441a961fefbf79f5eed1e32b2f096944b20",
+                "sha256:36fe88cd2d6c6bec23dca9804bab2ba5517a8bb9d8f47ebc68981b56840107ad"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.8'",
+            "version": "==3.15.2"
         },
         "mysqlclient": {
             "hashes": [

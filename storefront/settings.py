@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # added by me
+    "rest_framework",
     "playground",
     "debug_toolbar",
     "store",
