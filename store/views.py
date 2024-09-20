@@ -1,6 +1,6 @@
 from rest_framework.response import Response
-from .models import OrderItem, Product, Collection
-from .serializers import CollectionSerializer, ProductSerializer
+from .models import OrderItem, Product, Collection, Review
+from .serializers import CollectionSerializer, ProductSerializer, ReviewSerializer
 from rest_framework import status
 from django.db.models import Count
 from rest_framework.viewsets import ModelViewSet
@@ -35,6 +35,11 @@ class CollectionViewSet(ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
         return super().destroy(request, *args, **kwargs)
+
+
+class ReviewViewSet(ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
 
 
 # we can use ListCreateAPIView if we have logics
