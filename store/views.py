@@ -1,6 +1,8 @@
+from itertools import product
 from rest_framework.response import Response
 from .models import OrderItem, Product, Collection, Review
 from .serializers import CollectionSerializer, ProductSerializer, ReviewSerializer
+from rest_framework.exceptions import ValidationError
 from rest_framework import status
 from django.db.models import Count
 from rest_framework.viewsets import ModelViewSet
@@ -40,6 +42,21 @@ class CollectionViewSet(ModelViewSet):
 class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+
+    def get_queryset(self):
+        return Review.objects.filter(product_id=self.kwargs["product_pk"])
+
+    def get_serializer_context(self):
+        return {"product_id": self.kwargs["product_pk"]}
+
+    def perform_create(self, serializer):
+        product_id = self.kwargs["product_pk"]
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            raise ValidationError(f"Product with id {product_id} does not exist.")
+
+        serializer.save(product=product)
 
 
 # we can use ListCreateAPIView if we have logics
