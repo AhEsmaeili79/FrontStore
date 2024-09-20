@@ -8,7 +8,7 @@ class CollectionSerializer(serializers.ModelSerializer):
         model = Collection
         fields = ["title", "proudcts_count"]
 
-    proudcts_count = serializers.IntegerField()
+    proudcts_count = serializers.IntegerField(read_only=True)
 
 
 # for custome serializer we use :
