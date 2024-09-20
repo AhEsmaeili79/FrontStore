@@ -20,6 +20,7 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "unit_price", "price_with_tax", "collection"]
 
     price_with_tax = serializers.SerializerMethodField(method_name="calculate_tax")
+
     collection = serializers.StringRelatedField()
 
     # Custome Serializers
