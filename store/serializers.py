@@ -6,7 +6,9 @@ from store.models import Product, Collection
 class CollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Collection
-        fields = ["id", "title"]
+        fields = ["title", "proudcts_count"]
+
+    proudcts_count = serializers.IntegerField()
 
 
 # for custome serializer we use :
@@ -17,11 +19,23 @@ class CollectionSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ["id", "title", "unit_price", "price_with_tax", "collection"]
+        fields = [
+            "id",
+            "title",
+            "description",
+            "slug",
+            "inventory",
+            "unit_price",
+            "price_with_tax",
+            "collection",
+        ]
 
     price_with_tax = serializers.SerializerMethodField(method_name="calculate_tax")
 
-    collection = serializers.StringRelatedField()
+    def calculate_tax(self, product: Product):
+        return product.unit_price * Decimal(1.1)
+
+    # collection = serializers.PrimaryKeyRelatedField(queryset=Collection.objects.all())
 
     # Custome Serializers
     # id = serializers.IntegerField()
@@ -46,6 +60,3 @@ class ProductSerializer(serializers.ModelSerializer):
     # # collection = serializers.HyperlinkedRelatedField(
     # #     queryset=Collection.objects.all(), view_name="collection-detail"
     # # )
-
-    def calculate_tax(self, product: Product):
-        return round(product.unit_price * Decimal(1.1), 2)
