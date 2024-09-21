@@ -11,6 +11,7 @@ psycopg2 = "*"
 django-rest-framework = "*"
 djangorestframework = "*"
 drf-nested-routers = "*"
+django-filter = "*"
 
 [dev-packages]
 

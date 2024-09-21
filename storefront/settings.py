@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # added by me
+    "django_filters",
     "rest_framework",
     "playground",
     "debug_toolbar",
