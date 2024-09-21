@@ -7,13 +7,12 @@ name = "pypi"
 django = "*"
 django-debug-toolbar = "*"
 mysqlclient = "*"
-psycopg2 = "*"
-django-rest-framework = "*"
 djangorestframework = "*"
 drf-nested-routers = "*"
 django-filter = "*"
 
 [dev-packages]
+autopep8 = "*"
 
 [requires]
-python_version = "3.12"
+python_version = "3.9"

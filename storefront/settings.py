@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # added by me
     "django_filters",
     "rest_framework",
     "playground",
@@ -92,20 +91,16 @@ WSGI_APPLICATION = "storefront.wsgi.application"
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'storefront',
+#         'NAME': 'storefront2',
 #         'HOST': 'localhost',
 #         'USER': 'root',
 #         'PASSWORD': 'MyPassword'
 #     }
 # }
-
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "storefront2",
-        "USER": "postgres",
-        "PASSWORD": "137919",
-        "HOST": "localhost",
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
@@ -153,7 +148,4 @@ STATIC_URL = "/static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
-REST_FRAMEWORK = {
-    "COERCE_DECIMAL_TO_STRING": False,
-}
+REST_FRAMEWORK = {"COERCE_DECIMAL_TO_STRING": False}

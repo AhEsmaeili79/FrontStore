@@ -1,134 +1,54 @@
-from django.db.models import Count
+from store.pagination import DefaultPagination
+from django.db.models.aggregates import Count
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.response import Response
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.exceptions import ValidationError
-from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from .models import OrderItem, Product, Collection, Review
-from .serializers import CollectionSerializer, ProductSerializer, ReviewSerializer
+from rest_framework import status
 from .filters import ProductFilter
-from .pagination import DefaultPagination
+from .models import Collection, Product, Review
+from .serializers import CollectionSerializer, ProductSerializer, ReviewSerializer
 
 
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-
-    #  we could use this for filter instead of
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = ProductFilter
-    search_fields = ["title", "description"]
-    ordering_fields = ["unit_price", "last_update"]
     pagination_class = DefaultPagination
-
-    #  using this for filter
-    # def get_queryset(self):
-    #     queryset = Product.objects.all()
-    #     collection_id = self.request.query_params.get("collection_id")
-    #     if collection_id is not None:
-    #         queryset = queryset.filter(collection_id=collection_id)
-
-    #     return queryset
+    search_fields = ['title', 'description']
+    ordering_fields = ['unit_price', 'last_update']
 
     def get_serializer_context(self):
-        return {"request": self.request}
+        return {'request': self.request}
 
-    def destroy(self, request, *args, **kwargs):
-        if OrderItem.objects.filter(product_id=kwargs["pk"]).count() > 0:
-            return Response(
-                {"error": f"you can not delete this product includes some of orders."},
-                status=status.HTTP_403_FORBIDDEN,
-            )
-        return super().destroy(request, *args, **kwargs)
+    def delete(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        if product.orderitems.count() > 0:
+            return Response({'error': 'Product cannot be deleted because it is associated with an order item.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        product.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CollectionViewSet(ModelViewSet):
-    queryset = Collection.objects.annotate(proudcts_count=Count("products")).all()
+    queryset = Collection.objects.annotate(
+        products_count=Count('products')).all()
     serializer_class = CollectionSerializer
 
-    def destroy(self, request, *args, **kwargs):
-        if Product.objects.filter(collection_id=kwargs["pk"]).count() > 0:
-            return Response(
-                {
-                    "error": f"you can not delete this collection includes some of products."
-                },
-                status=status.HTTP_403_FORBIDDEN,
-            )
-        return super().destroy(request, *args, **kwargs)
+    def delete(self, request, pk):
+        collection = get_object_or_404(Collection, pk=pk)
+        if collection.products.count() > 0:
+            return Response({'error': 'Collection cannot be deleted because it includes one or more products.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        collection.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ReviewViewSet(ModelViewSet):
-    queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
     def get_queryset(self):
-        return Review.objects.filter(product_id=self.kwargs["product_pk"])
+        return Review.objects.filter(product_id=self.kwargs['product_pk'])
 
     def get_serializer_context(self):
-        return {"product_id": self.kwargs["product_pk"]}
-
-    def perform_create(self, serializer):
-        product_id = self.kwargs["product_pk"]
-        try:
-            product = Product.objects.get(id=product_id)
-        except Product.DoesNotExist:
-            raise ValidationError(f"Product with id {product_id} does not exist.")
-
-        serializer.save(product=product)
-
-
-# we can use ListCreateAPIView if we have logics
-# class ProductList(ListCreateAPIView):
-#     def get_queryset(self):
-#         return Product.objects.select_related("collection").all()
-
-#     def get_serializer_class(self):
-#         return ProductSerializer
-
-#     def get_serializer_context(self):
-#         return {"request": self.request}
-
-
-# or we can use API_VIEW
-# class ProductList(APIView):
-# def get(self, request):
-#     products = Product.objects.select_related("collection").all()
-#     serializer = ProductSerializer(
-#         products, many=True, context={"request": request}
-#     )
-#     return Response(serializer.data)
-
-# def post(self, request):
-#     serializer = ProductSerializer(data=request.data)
-#     serializer.is_valid(raise_exception=True)
-#     print(serializer.validated_data)
-#     serializer.save()
-#     return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-# @api_view(["GET", "POST"])
-# def product_list(request):
-#     if request.method == "GET":
-#         products = Product.objects.select_related("collection").all()
-#         serializer = ProductSerializer(
-#             products, many=True, context={"request": request}
-#         )
-#         return Response(serializer.data)
-#     elif request.method == "POST":
-#         serializer = ProductSerializer(data=request.data)
-
-#         # we can use this or
-#         serializer.is_valid(raise_exception=True)
-#         print(serializer.validated_data)
-#         serializer.save()
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-# we can use this both do same things
-
-# if serializer.is_valid():
-#     serializer.save()
-#     return Response("ok")
-# else:
-#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return {'product_id': self.kwargs['product_pk']}
