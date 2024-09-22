@@ -5,6 +5,7 @@ from django.contrib.contenttypes.admin import GenericTabularInline
 from store.admin import ProductAdmin
 from tags.models import TaggedItem
 from .models import User
+from store.models import Product
 
 
 @admin.register(User)
