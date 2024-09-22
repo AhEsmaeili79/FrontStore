@@ -12,8 +12,9 @@ from rest_framework.mixins import (
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import status
 from .filters import ProductFilter
-from .models import Cart, Collection, Product, Review
+from .models import Cart, CartItem, Collection, Product, Review
 from .serializers import (
+    CartItemSerializer,
     CartSerializer,
     CollectionSerializer,
     ProductSerializer,
@@ -78,3 +79,13 @@ class CartViewSet(
 ):
     queryset = Cart.objects.prefetch_related("items__product").all()
     serializer_class = CartSerializer
+
+
+class CartItemViewSet(ModelViewSet):
+
+    serializer_class = CartItemSerializer
+
+    def get_queryset(self):
+        return CartItem.objects.filter(cart_id=self.kwargs["cart_pk"]).select_related(
+            "product"
+        )
