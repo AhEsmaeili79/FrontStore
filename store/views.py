@@ -3,7 +3,13 @@ from django.db.models.aggregates import Count
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import (
+    IsAuthenticated,
+    DjangoModelPermissionsOrAnonReadOnly,
+    AllowAny,
+    DjangoModelPermissions,
+    IsAdminUser,
+)
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from rest_framework.mixins import (
@@ -115,12 +121,12 @@ class CustomerViewSet(
 ):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
-    def get_permissions(self):
-        if self.request.method == "GET":
-            return [AllowAny()]
-        return [IsAuthenticated()]
+    # def get_permissions(self):
+    #     if self.request.method == "GET":
+    #         return [AllowAny()]
+    #     return [IsAuthenticated()]
 
     @action(detail=False, methods=["GET", "PUT"])
     def me(self, request):
