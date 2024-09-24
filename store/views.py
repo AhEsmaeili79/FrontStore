@@ -1,5 +1,3 @@
-import re
-from core import serializers
 from store.pagination import DefaultPagination
 from django.db.models.aggregates import Count
 from django.shortcuts import get_object_or_404
@@ -16,6 +14,8 @@ from rest_framework.mixins import (
 )
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import status
+
+from .permissions import IsAdminOrReadOnly
 from .filters import ProductFilter
 from .models import Cart, CartItem, Collection, Customer, Product, Review
 from .serializers import (
@@ -36,6 +36,8 @@ class ProductViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = ProductFilter
     pagination_class = DefaultPagination
+    permission_classes = [IsAdminOrReadOnly]
+
     search_fields = ["title", "description"]
     ordering_fields = ["unit_price", "last_update"]
 
