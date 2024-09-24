@@ -21,7 +21,7 @@ from rest_framework.mixins import (
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import status
 
-from .permissions import IsAdminOrReadOnly
+from .permissions import IsAdminOrReadOnly, ViewCustomerHistoryPermission
 from .filters import ProductFilter
 from .models import Cart, CartItem, Collection, Customer, Product, Review
 from .serializers import (
@@ -122,6 +122,10 @@ class CustomerViewSet(
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
     permission_classes = [IsAdminUser]
+
+    @action(detail=True, permission_classes=[ViewCustomerHistoryPermission])
+    def history(self, request, pk):
+        return Response("ok")
 
     # def get_permissions(self):
     #     if self.request.method == "GET":
