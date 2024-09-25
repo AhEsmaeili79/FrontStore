@@ -23,14 +23,13 @@ from rest_framework import status
 
 from .permissions import IsAdminOrReadOnly, ViewCustomerHistoryPermission
 from .filters import ProductFilter
-from .models import Cart, CartItem, Collection, Customer, Order, Product, Review
+from .models import Cart, CartItem, Collection, Customer, Product, Review
 from .serializers import (
     AddCartItemSerializer,
     CartItemSerializer,
     CartSerializer,
     CollectionSerializer,
     CustomerSerializer,
-    OrderSerializer,
     ProductSerializer,
     ReviewSerializer,
     UpdateCartItemSerializer,
@@ -144,6 +143,7 @@ class CustomerViewSet(
             serializer.is_valid(raise_exception=True)
             serializer.save()
         return Response(serializer.data)
+<<<<<<< HEAD
 
 
 class OrderViewSet(ModelViewSet):
@@ -160,3 +160,6 @@ class OrderViewSet(ModelViewSet):
             user_id=user.id
         )
         return Order.objects.filter(customer_id=customer_id)
+    
+=======
+>>>>>>> parent of 11edd8d (6.3 add_order_Serializer)
