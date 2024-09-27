@@ -1,3 +1,5 @@
+from multiprocessing import context
+from core import serializers
 from store.pagination import DefaultPagination
 from django.db.models.aggregates import Count
 from django.shortcuts import get_object_or_404
@@ -150,13 +152,22 @@ class CustomerViewSet(
 class OrderViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
+    def create(self, request, *args, **kwargs):
+        serializer = CreateOrderSerializer(
+            data=request.data, context={"user_id": self.request.user.id}
+        )
+        serializer.is_valid(raise_exception=True)
+        order = serializer.save()
+        serializer = OrderSerializer(order)
+        return Response(serializer.data)
+
     def get_serializer_class(self):
         if self.request.method == "POST":
             return CreateOrderSerializer
         return OrderSerializer
 
     def get_serializer_context(self):
-        return {"user_id": self.request.user.id}
+        return
 
     def get_queryset(self):
         user = self.request.user
