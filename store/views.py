@@ -166,9 +166,6 @@ class OrderViewSet(ModelViewSet):
             return CreateOrderSerializer
         return OrderSerializer
 
-    def get_serializer_context(self):
-        return
-
     def get_queryset(self):
         user = self.request.user
         # add permission
