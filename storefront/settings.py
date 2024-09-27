@@ -10,8 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-from datetime import timedelta
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -90,15 +90,17 @@ WSGI_APPLICATION = "storefront.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# Postgresql
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'storefront2',
-#         'HOST': 'localhost',
-#         'USER': 'root',
-#         'PASSWORD': 'MyPassword'
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "storefront3",
+#         "USER": "postgres",
+#         "PASSWORD": "137919",
+#         "HOST": "localhost",
 #     }
 # }
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -155,7 +157,6 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    # "DEFAULT_PERMISSIONS_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
 }
 
 AUTH_USER_MODEL = "core.User"
@@ -167,8 +168,4 @@ DJOSER = {
     }
 }
 
-
-SIMPLE_JWT = {
-    "AUTH_HEADER_TYPES": ("JWT",),
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
-}
+SIMPLE_JWT = {"AUTH_HEADER_TYPES": ("JWT",), "ACCESS_TOKEN_LIFETIME": timedelta(days=1)}
